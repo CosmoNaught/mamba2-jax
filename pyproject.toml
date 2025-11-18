@@ -1,7 +1,7 @@
 [project]
 name = "mamba2-jax"
 version = "0.1.0"
-description = "Add your description here"
+description = " Implementation of Mamba2 SSM on JAX"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = []
