@@ -259,25 +259,27 @@ class Mamba2Block(nn.Module):
     config: Mamba2Config
     layer_idx: int
 
-    @nn.compact
+    def setup(self):
+        cfg = self.config
+        self.residual_in_fp32 = cfg.residual_in_fp32
+        self.norm = Mamba2RMSNorm(cfg.hidden_size, eps=cfg.layer_norm_epsilon)
+        self.mixer = Mamba2Mixer(cfg, layer_idx=self.layer_idx)
+
     def __call__(
         self,
         hidden_states: jnp.ndarray,
         initial_state: Optional[jnp.ndarray] = None,  # (B, H, P, N)
         return_final_state: bool = False,
     ) -> Tuple[jnp.ndarray, Optional[jnp.ndarray]]:
-        cfg = self.config
         residual = hidden_states
         hs = hidden_states.astype(jnp.float32)
 
-        norm = Mamba2RMSNorm(cfg.hidden_size, eps=cfg.layer_norm_epsilon)
-        hs = norm(hs)
+        hs = self.norm(hs)
 
-        if cfg.residual_in_fp32:
+        if self.residual_in_fp32:
             residual = residual.astype(jnp.float32)
 
-        mixer = Mamba2Mixer(cfg, layer_idx=self.layer_idx)
-        hs_out, last_state = mixer(
+        hs_out, last_state = self.mixer(
             hs,
             initial_state=initial_state,
             return_final_state=return_final_state,
