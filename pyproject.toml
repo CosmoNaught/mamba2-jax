@@ -14,11 +14,19 @@ dependencies = [
     "jax>=0.8.1",
     "optax>=0.2.6",
     "orbax-checkpoint>=0.11.28",
-    "pytest>=9.0.1",
 ]
+license = { text = "MIT" }
+authors = [{ name = "Cosmo Santoni" }]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+]
+urls = {"Homepage" = "https://github.com/CosmoNaught/mamba2-jax"}
 
 [project.optional-dependencies]
-dev = ["pytest"]
+dev = ["pytest>=9.0.1"]
 
 [tool.setuptools]
 packages = ["mamba2_jax"]

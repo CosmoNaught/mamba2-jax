@@ -35,7 +35,7 @@ This implementation prioritizes clarity and correctness over raw performance, ma
 
 ### Stable Version
 
-Automatically download from PyPI using pip (COMING SOON!)
+Automatically download from PyPI using pip
 
 ```bash
 pip install mamba2-jax
