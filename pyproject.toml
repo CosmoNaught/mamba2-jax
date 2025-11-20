@@ -1,7 +1,24 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "mamba2-jax"
 version = "0.1.0"
-description = " Implementation of Mamba2 SSM on JAX"
+description = "Implementation of Mamba2 SSM on JAX"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = []
+dependencies = [
+    "einops>=0.8.1",
+    "flax>=0.12.1",
+    "jax>=0.8.1",
+    "optax>=0.2.6",
+    "orbax-checkpoint>=0.11.28",
+    "pytest>=9.0.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest"]
+
+[tool.setuptools]
+packages = ["mamba2_jax"]

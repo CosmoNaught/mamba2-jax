@@ -35,7 +35,7 @@ This implementation prioritizes clarity and correctness over raw performance, ma
 
 ### Stable Version
 
-Automatically download from PyPI using pip
+Automatically download from PyPI using pip (COMING SOON!)
 
 ```bash
 pip install mamba2-jax
@@ -290,7 +290,6 @@ Contributions are welcome! Areas where help would be particularly valuable:
 
 - Performance optimization and profiling
 - Test coverage expansion
-- Model conversion from PyTorch weights
 - Documentation improvements
 - Bug reports and feature requests
 
@@ -311,6 +310,8 @@ This implementation builds upon the excellent work of many researchers and engin
 **JAX Ecosystem [[3]](#references) [[4]](#references) :**
 - The JAX, Flax, and Optax teams at Google for the excellent frameworks
 - The broader JAX community for tools and support
+
+> NOTE: I (Cosmo Santoni) am not affiliated with the original authors of Mamba2 paper nor PyTorch, HuggingFace, Google, JAX or Flax teams. I am an independent researcher at Imperial College London.s
 
 ## References
 
