@@ -1,5 +1,5 @@
 # mamba2_jax/__init__.py
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 from .config import Mamba2Config
 from .model import Mamba2Model

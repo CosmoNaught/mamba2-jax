@@ -4,26 +4,49 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mamba2-jax"
-version = "0.1.0"
-description = "Implementation of Mamba2 SSM on JAX"
-readme = "README.md"
+version = "0.1.1"
+description = "Pure JAX/Flax implementation of the Mamba2 state-space model for language modelling and time-series forecasting."
+readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.12"
 dependencies = [
-    "einops>=0.8.1",
-    "flax>=0.12.1",
-    "jax>=0.8.1",
-    "optax>=0.2.6",
-    "orbax-checkpoint>=0.11.28",
+  "einops>=0.8.1",
+  "flax>=0.12.1",
+  "jax>=0.8.1",
+  "optax>=0.2.6",
+  "orbax-checkpoint>=0.11.28",
 ]
 license = { text = "MIT" }
-authors = [{ name = "Cosmo Santoni" }]
+authors = [
+  { name = "Cosmo Santoni" }
+]
+keywords = [
+  "mamba2",
+  "jax",
+  "flax",
+  "state-space-model",
+  "ssm",
+  "language-modeling",
+  "time-series",
+  "sequence-modeling",
+]
 classifiers = [
+  "Development Status :: 3 - Alpha",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3 :: Only",
   "License :: OSI Approved :: MIT License",
   "Operating System :: OS Independent",
+  "Intended Audience :: Science/Research",
+  "Intended Audience :: Developers",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+  "Topic :: Scientific/Engineering :: Mathematics",
+  "Topic :: Software Development :: Libraries :: Python Modules",
 ]
-urls = {"Homepage" = "https://github.com/CosmoNaught/mamba2-jax"}
+
+[project.urls]
+Homepage = "https://github.com/CosmoNaught/mamba2-jax"
+Repository = "https://github.com/CosmoNaught/mamba2-jax"
+Issues = "https://github.com/CosmoNaught/mamba2-jax/issues"
 
 [project.optional-dependencies]
 dev = ["pytest>=9.0.1"]
