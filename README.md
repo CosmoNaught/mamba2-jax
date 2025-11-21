@@ -53,17 +53,25 @@ pip install -e .
 
 ### Requirements
 
+For a simple CPU-only setup:
+
 ```bash
 pip install jax jaxlib flax optax einops
 ```
 
+For GPU (CUDA) or TPU support, install the appropriate JAX wheels for your hardware as described in the official JAX installation guide. Once JAX sees your device, `mamba2-jax` will automatically run there.
+
 ### GPU (CUDA) & TPU support
 
-CUDA support will be released in an upcoming version with plans to optimise for triton kernel.
+Mamba2-JAX is a pure JAX/Flax library and runs on any backend supported by your JAX installation:
 
-For TPU support, follow the [official JAX TPU guide](https://jax.readthedocs.io/en/latest/installation.html#tpu).
+- **CPU** – default if you install standard `jax` / `jaxlib`.
+- **CUDA GPUs** – supported today via JAX’s CUDA PJRT backend. This implementation has been smoke-tested on NVIDIA RTX 3500 Ada (laptop) and NVIDIA T4-class GPUs.
+- **TPUs** – supported via JAX’s TPU backend. The library has been smoke-tested on Google Cloud TPU v5e-1.
 
-> WARN! TPU support has not been validated as of this release.
+For GPU and TPU setup, please follow the [official JAX installation guide](https://jax.readthedocs.io/en/latest/installation.html) for device-specific wheels and instructions.
+
+> NOTE: GPU/TPU usage is still considered **experimental** in this alpha as it not has been extensively tested. The focus so far has been numerical correctness rather than deep performance tuning.
 
 ## Usage
 
@@ -284,8 +292,42 @@ This alpha release has several known limitations:
 
 We're actively working on addressing these limitations in upcoming releases.
 
-## Contributing
+## FAQ (JAX / CUDA / TPU)
 
+**Does `mamba2-jax` run on GPU and TPU?**  
+Yes. As a pure JAX/Flax implementation, `mamba2-jax` runs on any backend that your JAX installation supports. If you install a CUDA-enabled JAX build, it will use your NVIDIA GPU; if you install the TPU wheels and run on Cloud TPU (e.g. v5e-1), it will run there too.
+
+**Why do I see messages like `GPU interconnect information not available: NVML doesn't support extracting fabric info or NVLink is not used by the device.`?**  
+These lines are printed by JAX/XLA’s CUDA runtime during startup, not by `mamba2-jax`. They usually mean “your GPU does not expose NVLink / fabric topology to NVML”, and they are safe to ignore for normal training and inference.
+
+**What about `Delay kernel timed out: measured time has sub-optimal accuracy...` from `cuda_timer.cc`?**  
+This message also comes from the XLA CUDA backend. It indicates that an internal timing kernel used for profiling and autotuning was not accurate enough and XLA fell back to a different timing path. It does **not** indicate that your model or gradients are wrong; it only affects how XLA measures performance internally.
+
+**How do I force CPU vs GPU?**  
+JAX picks a backend automatically, but you can override it via the `JAX_PLATFORMS` environment variable *before* importing JAX:
+
+```bash
+# CPU only
+export JAX_PLATFORMS=cpu
+
+# Prefer CUDA, fall back to CPU if something is wrong
+export JAX_PLATFORMS=cuda,cpu
+```
+
+**How can I reduce JAX/XLA log noise?**  
+JAX/XLA uses the `TF_CPP_MIN_LOG_LEVEL` environment variable to control C++ backend logging:
+
+```bash
+# Show INFO, WARNING, ERROR (default)
+export TF_CPP_MIN_LOG_LEVEL=0
+
+# Hide INFO + WARNING, keep ERROR (recommended if logs feel noisy)
+export TF_CPP_MIN_LOG_LEVEL=2
+```
+
+You can set these in your shell or at the very top of your own scripts *before* importing JAX. The core `mamba2-jax` library does not change global logging settings for you.
+
+## Contributing
 Contributions are welcome! Areas where help would be particularly valuable:
 
 - Performance optimization and profiling
