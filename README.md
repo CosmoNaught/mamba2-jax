@@ -6,7 +6,7 @@ This is an experimental JAX/Flax implementation of Mamba2 [[1]](#references) ins
 
 **Current Status: Alpha (Stable) Release**
 
-This alpha version focuses on numerical correctness and stability. The implementation has been tested against the PyTorch version and shows equivalent numerical behavior (see [Numerical Validation](#numerical-validation) below).
+This alpha version focuses on numerical correctness and stability. The implementation has been tested against the PyTorch version and shows equivalent numerical behavior see [Numerical Validation](#numerical-validation-with-pytorch) below.
 
 **NOTE:** This is an early-stage implementation that currently supports:
 - Pure JAX/Flax implementation (no Triton kernels)
