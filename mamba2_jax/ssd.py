@@ -18,7 +18,7 @@ def _pad_seq_dim(x: jnp.ndarray, pad_size: int) -> jnp.ndarray:
 
 def segsum(x: jnp.ndarray) -> jnp.ndarray:
     """
-    More stable segment sum calculation, JAX version of the PyTorch implementation.
+    More stable segment sum calculation.
 
     Input:
         x: (..., T)
@@ -60,8 +60,6 @@ def ssd_naive(
     return_final_states: bool = False,
 ) -> Tuple[jnp.ndarray, Optional[jnp.ndarray]]:
     """
-    JAX port of the PyTorch `_ssd_naive` function.
-
     Args:
         x:   (batch_size, seq_len, num_heads, head_dim)
         dt:  (batch_size, seq_len, num_heads)

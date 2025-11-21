@@ -13,7 +13,6 @@ from .model import Mamba2Model
 class Mamba2ForCausalLM(nn.Module):
     """
     JAX/Flax Causal LM head on top of the Mamba2 backbone.
-    Rough equivalent of PyTorch Mamba2ForCausalLM (without cache/generation helpers).
     """
     config: Mamba2Config
 
@@ -25,7 +24,6 @@ class Mamba2ForCausalLM(nn.Module):
             use_bias=False,
         )
         # Note: we are not literally weight-tying embeddings and lm_head yet.
-        # We can add that later if you want stricter parity.
 
     def __call__(
         self,

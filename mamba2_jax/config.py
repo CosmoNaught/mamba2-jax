@@ -7,7 +7,7 @@ from typing import Tuple
 @dataclass
 class Mamba2Config:
     """
-    Minimal JAX-side configuration mirroring the PyTorch/HF Mamba2Config.
+    Minimal JAX-side configuration.
     """
 
     vocab_size: int = 50280

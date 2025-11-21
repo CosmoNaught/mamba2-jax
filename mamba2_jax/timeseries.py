@@ -11,7 +11,7 @@ from .model import Mamba2Model
 
 class Mamba2Forecaster(nn.Module):
     """
-    JAX/Flax analogue of the PyTorch Mamba2Head for timeseries.
+    JAX/Flax analogue Mamba2Head for timeseries.
 
     Mirrors:
         - input_proj: Linear(input_dim -> d_model)
@@ -25,7 +25,6 @@ class Mamba2Forecaster(nn.Module):
     output_dim: int = 1
     forecast_horizon: int = 24
 
-    # You can override these if you want to experiment
     d_state: int = 128
     headdim: int = 64
     d_conv: int = 4
