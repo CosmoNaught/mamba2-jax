@@ -9,7 +9,7 @@ This is the standalone PyPI package for the Mamba2 implementation authored by [C
 
 ## Supported Models
 
-[![Model Support Table](docs/model_support_table.png)](docs/model_support_table.png)
+[![Model Support Table](https://raw.githubusercontent.com/CosmoNaught/mamba2-jax/main/docs/model_support_table.png)](https://raw.githubusercontent.com/CosmoNaught/mamba2-jax/main/docs/model_support_table.png)
 
 ## Features
 
@@ -26,7 +26,7 @@ This is the standalone PyPI package for the Mamba2 implementation authored by [C
 
 The SSM state cache enables O(n) autoregressive generation instead of O(n^2) re-computation. The example below demonstrates a **~30x speedup** on the 780M parameter model running on a TPU v6e when caching is enabled:
 
-![State Space Caching Speedup](docs/terminal_tps_comparison.gif)
+![State Space Caching Speedup](https://raw.githubusercontent.com/CosmoNaught/mamba2-jax/main/docs/terminal_tps_comparison.gif)
 
 ## Installation
 
@@ -118,7 +118,7 @@ print(y.shape)  # (8, 24, 1)
 
 Benchmarked on a TPU v6e with the `state-spaces/mamba2-130m` checkpoint:
 
-[![TPU v6e Benchmark](docs/alt_combined_figure.png)](docs/alt_combined_figure.png)
+[![TPU v6e Benchmark](https://raw.githubusercontent.com/CosmoNaught/mamba2-jax/main/docs/alt_combined_figure.png)](https://raw.githubusercontent.com/CosmoNaught/mamba2-jax/main/docs/alt_combined_figure.png)
 
 ## Project Structure
 
