@@ -4,18 +4,17 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mamba2-jax"
-version = "0.1.1"
-description = "Pure JAX/Flax implementation of the Mamba2 state-space model for language modelling and time-series forecasting."
+version = "1.0.0"
+description = "Pure JAX/Flax NNX implementation of the Mamba2 state-space model with state caching, pretrained weight loading, and time-series forecasting."
 readme = { file = "README.md", content-type = "text/markdown" }
-requires-python = ">=3.12"
+requires-python = ">=3.11"
 dependencies = [
-  "einops>=0.8.1",
-  "flax>=0.12.1",
-  "jax>=0.8.1",
+  "flax>=0.12.0",
+  "jax>=0.8.0",
+  "jaxlib>=0.8.0",
   "optax>=0.2.6",
-  "orbax-checkpoint>=0.11.28",
 ]
-license = { text = "MIT" }
+license = { text = "Apache-2.0" }
 authors = [
   { name = "Cosmo Santoni" }
 ]
@@ -23,18 +22,22 @@ keywords = [
   "mamba2",
   "jax",
   "flax",
+  "nnx",
   "state-space-model",
   "ssm",
   "language-modeling",
   "time-series",
   "sequence-modeling",
+  "bonsai",
+  "pretrained",
+  "caching",
 ]
 classifiers = [
-  "Development Status :: 3 - Alpha",
+  "Development Status :: 5 - Production/Stable",
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3 :: Only",
-  "License :: OSI Approved :: MIT License",
+  "License :: OSI Approved :: Apache Software License",
   "Operating System :: OS Independent",
   "Intended Audience :: Science/Research",
   "Intended Audience :: Developers",
@@ -47,9 +50,19 @@ classifiers = [
 Homepage = "https://github.com/CosmoNaught/mamba2-jax"
 Repository = "https://github.com/CosmoNaught/mamba2-jax"
 Issues = "https://github.com/CosmoNaught/mamba2-jax/issues"
+Upstream = "https://github.com/jax-ml/bonsai/tree/main/bonsai/models/mamba2"
 
 [project.optional-dependencies]
-dev = ["pytest>=9.0.1"]
+dev = [
+  "pytest>=9.0.1",
+  "absl-py>=2.0.0",
+  "numpy>=1.26.0",
+]
+pretrained = [
+  "safetensors>=0.4.0",
+  "huggingface_hub>=0.20.0",
+  "transformers>=4.40.0",
+]
 
 [tool.setuptools]
 packages = ["mamba2_jax"]
