@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mamba2-jax"
-version = "1.0.0"
+version = "1.0.1"
 description = "Pure JAX/Flax NNX implementation of the Mamba2 state-space model with state caching, pretrained weight loading, and time-series forecasting."
 readme = { file = "README.md", content-type = "text/markdown" }
 requires-python = ">=3.11"

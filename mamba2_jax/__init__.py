@@ -14,7 +14,7 @@
 
 """Mamba2-JAX: Pure JAX/Flax NNX implementation of Mamba2."""
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 from .modeling import (
     ACT2FN,
