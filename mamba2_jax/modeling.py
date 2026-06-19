@@ -144,6 +144,22 @@ def segsum(x: jnp.ndarray) -> jnp.ndarray:
     return x_segsum
 
 
+def _ssd_single_chunk(x, dt, A, B_mat, C_mat, D, return_final_states):
+    num_heads = x.shape[2]
+    x_disc = x * dt[..., None]
+    A_disc = A.astype(x_disc.dtype) * dt
+    D_residual = D.reshape(1, 1, num_heads, 1) * x
+    A_t = jnp.transpose(A_disc, (0, 2, 1))
+    L_mat = jnp.exp(segsum(A_t))
+    y = jnp.einsum("blhn,bshn,bhls,bshp->blhp", C_mat, B_mat, L_mat, x_disc) + D_residual
+    final_state = None
+    if return_final_states:
+        A_cumsum = jnp.cumsum(A_t, axis=-1)
+        decay = jnp.exp(A_cumsum[..., -1:] - A_cumsum)
+        final_state = jnp.einsum("blhn,bhl,blhp->bhpn", B_mat, decay, x_disc)
+    return y, final_state
+
+
 def ssd_forward(
     x: jnp.ndarray,  # (B, L, H, P)
     dt: jnp.ndarray,  # (B, L, H)
@@ -179,11 +195,15 @@ def ssd_forward(
         final_state: Optional final states (batch_size, num_heads, head_dim, state_size)
     """
     _B_size, seq_len, num_heads, _head_dim = x.shape
-    pad_size = (chunk_size - seq_len % chunk_size) % chunk_size
 
     # Apply dt bias with softplus and clamp
     dt = jax.nn.softplus(dt + dt_bias)
     dt = jnp.clip(dt, dt_min, dt_max)
+
+    if initial_states is None and seq_len <= chunk_size:
+        return _ssd_single_chunk(x, dt, A, B_mat, C_mat, D, return_final_states)
+
+    pad_size = (chunk_size - seq_len % chunk_size) % chunk_size
 
     # Pad tensors along sequence dimension
     x_padded = _pad_seq_dim(x, pad_size)
@@ -289,13 +309,20 @@ class DepthwiseConv1d(nnx.Module):
     @jax.named_scope("depthwise_conv1d")
     def __call__(self, x: jnp.ndarray, conv_state: jnp.ndarray | None = None) -> tuple[jnp.ndarray, jnp.ndarray]:
         cache_len = self.kernel_size - 1
+        seq_len = x.shape[1]
 
         if conv_state is None:
             x_padded = jnp.pad(x, ((0, 0), (cache_len, 0), (0, 0)), mode="constant", constant_values=0.0)
         else:
             x_padded = jnp.concatenate([jnp.transpose(conv_state, (0, 2, 1)), x], axis=1)
 
-        output = self.conv(x_padded)
+        w = self.conv.kernel[:][:, 0, :]
+        output = w[0] * x_padded[:, 0:seq_len, :]
+        for j in range(1, self.kernel_size):
+            output = output + w[j] * x_padded[:, j:j + seq_len, :]
+        if self.conv.bias is not None:
+            output = output + self.conv.bias[:]
+
         new_conv_state = jnp.transpose(x_padded[:, -cache_len:, :], (0, 2, 1))
 
         return output, new_conv_state
