@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import importlib.util
 import os
+import unittest
 
 os.environ["JAX_DEFAULT_MATMUL_PRECISION"] = "highest"
 import jax
@@ -355,7 +357,16 @@ class TestGradients(absltest.TestCase):
 
 
 class TestGoldenParity(absltest.TestCase):
-    """Tests for parity with mamba_ssm reference outputs."""
+    """Tests for parity with mamba_ssm reference outputs.
+
+    These compare the JAX model against committed golden outputs for the real
+    state-spaces/mamba2-130m checkpoint. Building the model downloads that
+    checkpoint (network) and loads it via PyTorch, so when huggingface_hub/torch
+    are missing or the download fails the tests SKIP rather than erroring the
+    whole suite. To run them: pip install 'mamba2-jax[golden]'.
+    """
+
+    MODEL_ID = "state-spaces/mamba2-130m"
 
     @classmethod
     def setUpClass(cls):
@@ -363,9 +374,11 @@ class TestGoldenParity(absltest.TestCase):
         artifacts_dir = os.path.join(os.path.dirname(__file__), "artifacts")
         cls.golden = np.load(os.path.join(artifacts_dir, "golden_mamba2_130m.npz"))
 
-    def test_hidden_state_parity(self):
-        """Test last_hidden_state matches mamba_ssm reference within numerical tolerance."""
-        cfg = modeling.Mamba2Config(
+        for dep in ("huggingface_hub", "torch"):
+            if importlib.util.find_spec(dep) is None:
+                raise unittest.SkipTest(f"golden parity needs '{dep}' (pip install 'mamba2-jax[golden]')")
+
+        cls.cfg = modeling.Mamba2Config(
             vocab_size=50288,
             hidden_size=768,
             state_size=128,
@@ -374,10 +387,16 @@ class TestGoldenParity(absltest.TestCase):
             expand=2,
             conv_kernel=4,
         )
-        model = modeling.Mamba2ForCausalLM.from_pretrained("state-spaces/mamba2-130m", cfg=cfg)
+        try:
+            # Build once and share across tests (the download + load is the slow part).
+            cls.model = modeling.Mamba2ForCausalLM.from_pretrained(cls.MODEL_ID, cfg=cls.cfg)
+        except Exception as e:  # network / download / load failure -> skip, don't error
+            raise unittest.SkipTest(f"could not load {cls.MODEL_ID}: {e}")
 
+    def test_hidden_state_parity(self):
+        """Test last_hidden_state matches mamba_ssm reference within numerical tolerance."""
         input_ids = jnp.array(self.golden["input_ids"], dtype=jnp.int32)
-        outputs = model.backbone(input_ids=input_ids)
+        outputs = self.model.backbone(input_ids=input_ids)
         bonsai_hidden = np.array(outputs["last_hidden_state"])
         golden_hidden = self.golden["last_hidden_state"]
 
@@ -389,19 +408,8 @@ class TestGoldenParity(absltest.TestCase):
 
     def test_logits_parity(self):
         """Test logits match mamba_ssm reference within numerical tolerance."""
-        cfg = modeling.Mamba2Config(
-            vocab_size=50288,
-            hidden_size=768,
-            state_size=128,
-            num_hidden_layers=24,
-            head_dim=64,
-            expand=2,
-            conv_kernel=4,
-        )
-        model = modeling.Mamba2ForCausalLM.from_pretrained("state-spaces/mamba2-130m", cfg=cfg)
-
         input_ids = jnp.array(self.golden["input_ids"], dtype=jnp.int32)
-        outputs = model(input_ids=input_ids)
+        outputs = self.model(input_ids=input_ids)
         bonsai_logits = np.array(outputs["logits"])[:, :, :256]
         golden_logits = self.golden["logits_slice"]
 
