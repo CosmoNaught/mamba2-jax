@@ -5,11 +5,13 @@
 
 A pure JAX/Flax NNX implementation of the Mamba2 state-space model with SSM state caching, pretrained weight loading from HuggingFace, causal language modeling, and time-series forecasting.
 
-This is the standalone PyPI package for the Mamba2 implementation authored by [Cosmo Santoni](https://github.com/CosmoNaught) and merged into Google's [JAX ML Bonsai](https://github.com/jax-ml/bonsai) library. The upstream source lives at [`bonsai/models/mamba2`](https://github.com/jax-ml/bonsai/tree/main/bonsai/models/mamba2).
+This is the standalone PyPI package for the Mamba2 implementation authored by [Cosmo Santoni](https://cosmosantoni.com) and merged into Google's [JAX ML Bonsai](https://github.com/jax-ml/bonsai) library. The upstream source lives at [`bonsai/models/mamba2`](https://github.com/jax-ml/bonsai/tree/main/bonsai/models/mamba2).
+
+*Independent community reimplementation — not affiliated with, endorsed by, or connected to the original Mamba authors or [state-spaces/mamba](https://github.com/state-spaces/mamba).*
 
 ## Supported Models
 
-[![Model Support Table](https://raw.githubusercontent.com/CosmoNaught/mamba2-jax/main/docs/model_support_table.png)](https://raw.githubusercontent.com/CosmoNaught/mamba2-jax/main/docs/model_support_table.png)
+[![Model Support Table](https://raw.githubusercontent.com/jax-state-spaces/mamba2-jax/main/docs/model_support_table.png)](https://raw.githubusercontent.com/jax-state-spaces/mamba2-jax/main/docs/model_support_table.png)
 
 ## Features
 
@@ -26,7 +28,7 @@ This is the standalone PyPI package for the Mamba2 implementation authored by [C
 
 The SSM state cache enables O(n) autoregressive generation instead of O(n^2) re-computation. The example below demonstrates a **~30x speedup** on the 780M parameter model running on a TPU v6e when caching is enabled:
 
-![State Space Caching Speedup](https://raw.githubusercontent.com/CosmoNaught/mamba2-jax/main/docs/terminal_tps_comparison.gif)
+![State Space Caching Speedup](https://raw.githubusercontent.com/jax-state-spaces/mamba2-jax/main/docs/terminal_tps_comparison.gif)
 
 ## Installation
 
@@ -39,7 +41,7 @@ pip install mamba2-jax
 ### From source
 
 ```bash
-git clone https://github.com/CosmoNaught/mamba2-jax.git
+git clone https://github.com/jax-state-spaces/mamba2-jax.git
 cd mamba2-jax
 pip install -e ".[dev]"
 ```
@@ -118,7 +120,7 @@ print(y.shape)  # (8, 24, 1)
 
 Benchmarked on a TPU v6e with the `state-spaces/mamba2-130m` checkpoint:
 
-[![TPU v6e Benchmark](https://raw.githubusercontent.com/CosmoNaught/mamba2-jax/main/docs/alt_combined_figure.png)](https://raw.githubusercontent.com/CosmoNaught/mamba2-jax/main/docs/alt_combined_figure.png)
+[![TPU v6e Benchmark](https://raw.githubusercontent.com/jax-state-spaces/mamba2-jax/main/docs/alt_combined_figure.png)](https://raw.githubusercontent.com/jax-state-spaces/mamba2-jax/main/docs/alt_combined_figure.png)
 
 ## Project Structure
 
@@ -178,6 +180,6 @@ If you use this implementation in your research, please cite the original Mamba2
   author  = {Cosmo Santoni},
   title   = {mamba2-jax: Pure JAX Implementation of Mamba2},
   year    = {2025},
-  url     = {https://github.com/CosmoNaught/mamba2-jax}
+  url     = {https://github.com/jax-state-spaces/mamba2-jax}
 }
 ```
